@@ -1,0 +1,547 @@
+{
+ "a_reel1": {
+  "out": "a_reel1.mp4",
+  "w": 1080,
+  "h": 1920,
+  "audio": "a_reel1.mp3",
+  "frames": [
+   {
+    "img": "a_reel1_f0.png",
+    "words": 10
+   },
+   {
+    "img": "a_reel1_f1.png",
+    "words": 3
+   },
+   {
+    "img": "a_reel1_f2.png",
+    "words": 12
+   },
+   {
+    "img": "a_reel1_f3.png",
+    "words": 4
+   },
+   {
+    "img": "a_reel1_f4.png",
+    "words": 9
+   },
+   {
+    "img": "a_reel1_f5.png",
+    "words": 12
+   },
+   {
+    "img": "a_reel1_f6.png",
+    "words": 2
+   }
+  ]
+ },
+ "a_reel2": {
+  "out": "a_reel2.mp4",
+  "w": 1080,
+  "h": 1920,
+  "audio": "a_reel2.mp3",
+  "frames": [
+   {
+    "img": "a_reel2_f0.png",
+    "words": 6
+   },
+   {
+    "img": "a_reel2_f1.png",
+    "words": 9
+   },
+   {
+    "img": "a_reel2_f2.png",
+    "words": 10
+   },
+   {
+    "img": "a_reel2_f3.png",
+    "words": 10
+   },
+   {
+    "img": "a_reel2_f4.png",
+    "words": 6
+   },
+   {
+    "img": "a_reel2_f5.png",
+    "words": 6
+   },
+   {
+    "img": "a_reel2_f6.png",
+    "words": 5
+   },
+   {
+    "img": "a_reel2_f7.png",
+    "words": 10
+   }
+  ]
+ },
+ "a_reel3": {
+  "out": "a_reel3.mp4",
+  "w": 1080,
+  "h": 1920,
+  "audio": "a_reel3.mp3",
+  "frames": [
+   {
+    "img": "a_reel3_f0.png",
+    "words": 4
+   },
+   {
+    "img": "a_reel3_f1.png",
+    "words": 6
+   },
+   {
+    "img": "a_reel3_f2.png",
+    "words": 4
+   },
+   {
+    "img": "a_reel3_f3.png",
+    "words": 7
+   },
+   {
+    "img": "a_reel3_f4.png",
+    "words": 9
+   },
+   {
+    "img": "a_reel3_f5.png",
+    "words": 9
+   },
+   {
+    "img": "a_reel3_f6.png",
+    "words": 8
+   }
+  ]
+ },
+ "a_reel4": {
+  "out": "a_reel4.mp4",
+  "w": 1080,
+  "h": 1920,
+  "audio": "a_reel4.mp3",
+  "frames": [
+   {
+    "img": "a_reel4_f0.png",
+    "words": 15
+   },
+   {
+    "img": "a_reel4_f1.png",
+    "words": 8
+   },
+   {
+    "img": "a_reel4_f2.png",
+    "words": 11
+   },
+   {
+    "img": "a_reel4_f3.png",
+    "words": 10
+   },
+   {
+    "img": "a_reel4_f4.png",
+    "words": 9
+   },
+   {
+    "img": "a_reel4_f5.png",
+    "words": 5
+   },
+   {
+    "img": "a_reel4_f6.png",
+    "words": 8
+   }
+  ]
+ },
+ "a_reel5": {
+  "out": "a_reel5.mp4",
+  "w": 1080,
+  "h": 1920,
+  "audio": "a_reel5.mp3",
+  "frames": [
+   {
+    "img": "a_reel5_f0.png",
+    "words": 8
+   },
+   {
+    "img": "a_reel5_f1.png",
+    "words": 9
+   },
+   {
+    "img": "a_reel5_f2.png",
+    "words": 3
+   },
+   {
+    "img": "a_reel5_f3.png",
+    "words": 3
+   },
+   {
+    "img": "a_reel5_f4.png",
+    "words": 6
+   },
+   {
+    "img": "a_reel5_f5.png",
+    "words": 9
+   },
+   {
+    "img": "a_reel5_f6.png",
+    "words": 8
+   },
+   {
+    "img": "a_reel5_f7.png",
+    "words": 7
+   }
+  ]
+ },
+ "a_yt1": {
+  "out": "a_yt1.mp4",
+  "w": 1920,
+  "h": 1080,
+  "audio": null,
+  "frames": [
+   {
+    "img": "a_yt1_f0.png",
+    "words": 40,
+    "audio": "a_yt1_s0.mp3"
+   },
+   {
+    "img": "a_yt1_f1.png",
+    "words": 44,
+    "audio": "a_yt1_s1.mp3"
+   },
+   {
+    "img": "a_yt1_f2.png",
+    "words": 33,
+    "audio": "a_yt1_s2.mp3"
+   },
+   {
+    "img": "a_yt1_f3.png",
+    "words": 41,
+    "audio": "a_yt1_s3.mp3"
+   },
+   {
+    "img": "a_yt1_f4.png",
+    "words": 39,
+    "audio": "a_yt1_s4.mp3"
+   },
+   {
+    "img": "a_yt1_f5.png",
+    "words": 41,
+    "audio": "a_yt1_s5.mp3"
+   },
+   {
+    "img": "a_yt1_f6.png",
+    "words": 51,
+    "audio": "a_yt1_s6.mp3"
+   }
+  ]
+ },
+ "a_yt2": {
+  "out": "a_yt2.mp4",
+  "w": 1920,
+  "h": 1080,
+  "audio": null,
+  "frames": [
+   {
+    "img": "a_yt2_f0.png",
+    "words": 51,
+    "audio": "a_yt2_s0.mp3"
+   },
+   {
+    "img": "a_yt2_f1.png",
+    "words": 51,
+    "audio": "a_yt2_s1.mp3"
+   },
+   {
+    "img": "a_yt2_f2.png",
+    "words": 55,
+    "audio": "a_yt2_s2.mp3"
+   },
+   {
+    "img": "a_yt2_f3.png",
+    "words": 49,
+    "audio": "a_yt2_s3.mp3"
+   },
+   {
+    "img": "a_yt2_f4.png",
+    "words": 34,
+    "audio": "a_yt2_s4.mp3"
+   }
+  ]
+ },
+ "b_reel1": {
+  "out": "b_reel1.mp4",
+  "w": 1080,
+  "h": 1920,
+  "audio": "b_reel1.mp3",
+  "frames": [
+   {
+    "img": "b_reel1_f0.png",
+    "words": 11
+   },
+   {
+    "img": "b_reel1_f1.png",
+    "words": 4
+   },
+   {
+    "img": "b_reel1_f2.png",
+    "words": 11
+   },
+   {
+    "img": "b_reel1_f3.png",
+    "words": 1
+   },
+   {
+    "img": "b_reel1_f4.png",
+    "words": 15
+   },
+   {
+    "img": "b_reel1_f5.png",
+    "words": 1
+   },
+   {
+    "img": "b_reel1_f6.png",
+    "words": 18
+   },
+   {
+    "img": "b_reel1_f7.png",
+    "words": 4
+   },
+   {
+    "img": "b_reel1_f8.png",
+    "words": 3
+   }
+  ]
+ },
+ "b_reel2": {
+  "out": "b_reel2.mp4",
+  "w": 1080,
+  "h": 1920,
+  "audio": "b_reel2.mp3",
+  "frames": [
+   {
+    "img": "b_reel2_f0.png",
+    "words": 7
+   },
+   {
+    "img": "b_reel2_f1.png",
+    "words": 6
+   },
+   {
+    "img": "b_reel2_f2.png",
+    "words": 7
+   },
+   {
+    "img": "b_reel2_f3.png",
+    "words": 6
+   },
+   {
+    "img": "b_reel2_f4.png",
+    "words": 12
+   },
+   {
+    "img": "b_reel2_f5.png",
+    "words": 6
+   },
+   {
+    "img": "b_reel2_f6.png",
+    "words": 2
+   }
+  ]
+ },
+ "b_reel3": {
+  "out": "b_reel3.mp4",
+  "w": 1080,
+  "h": 1920,
+  "audio": "b_reel3.mp3",
+  "frames": [
+   {
+    "img": "b_reel3_f0.png",
+    "words": 9
+   },
+   {
+    "img": "b_reel3_f1.png",
+    "words": 10
+   },
+   {
+    "img": "b_reel3_f2.png",
+    "words": 8
+   },
+   {
+    "img": "b_reel3_f3.png",
+    "words": 14
+   },
+   {
+    "img": "b_reel3_f4.png",
+    "words": 3
+   },
+   {
+    "img": "b_reel3_f5.png",
+    "words": 7
+   },
+   {
+    "img": "b_reel3_f6.png",
+    "words": 6
+   },
+   {
+    "img": "b_reel3_f7.png",
+    "words": 9
+   },
+   {
+    "img": "b_reel3_f8.png",
+    "words": 5
+   }
+  ]
+ },
+ "b_reel4": {
+  "out": "b_reel4.mp4",
+  "w": 1080,
+  "h": 1920,
+  "audio": "b_reel4.mp3",
+  "frames": [
+   {
+    "img": "b_reel4_f0.png",
+    "words": 7
+   },
+   {
+    "img": "b_reel4_f1.png",
+    "words": 12
+   },
+   {
+    "img": "b_reel4_f2.png",
+    "words": 12
+   },
+   {
+    "img": "b_reel4_f3.png",
+    "words": 3
+   },
+   {
+    "img": "b_reel4_f4.png",
+    "words": 2
+   },
+   {
+    "img": "b_reel4_f5.png",
+    "words": 3
+   },
+   {
+    "img": "b_reel4_f6.png",
+    "words": 4
+   }
+  ]
+ },
+ "b_reel5": {
+  "out": "b_reel5.mp4",
+  "w": 1080,
+  "h": 1920,
+  "audio": "b_reel5.mp3",
+  "frames": [
+   {
+    "img": "b_reel5_f0.png",
+    "words": 8
+   },
+   {
+    "img": "b_reel5_f1.png",
+    "words": 5
+   },
+   {
+    "img": "b_reel5_f2.png",
+    "words": 11
+   },
+   {
+    "img": "b_reel5_f3.png",
+    "words": 8
+   },
+   {
+    "img": "b_reel5_f4.png",
+    "words": 6
+   },
+   {
+    "img": "b_reel5_f5.png",
+    "words": 9
+   },
+   {
+    "img": "b_reel5_f6.png",
+    "words": 3
+   },
+   {
+    "img": "b_reel5_f7.png",
+    "words": 4
+   }
+  ]
+ },
+ "b_yt1": {
+  "out": "b_yt1.mp4",
+  "w": 1920,
+  "h": 1080,
+  "audio": null,
+  "frames": [
+   {
+    "img": "b_yt1_f0.png",
+    "words": 32,
+    "audio": "b_yt1_s0.mp3"
+   },
+   {
+    "img": "b_yt1_f1.png",
+    "words": 44,
+    "audio": "b_yt1_s1.mp3"
+   },
+   {
+    "img": "b_yt1_f2.png",
+    "words": 45,
+    "audio": "b_yt1_s2.mp3"
+   },
+   {
+    "img": "b_yt1_f3.png",
+    "words": 41,
+    "audio": "b_yt1_s3.mp3"
+   },
+   {
+    "img": "b_yt1_f4.png",
+    "words": 43,
+    "audio": "b_yt1_s4.mp3"
+   },
+   {
+    "img": "b_yt1_f5.png",
+    "words": 29,
+    "audio": "b_yt1_s5.mp3"
+   }
+  ]
+ },
+ "b_yt2": {
+  "out": "b_yt2.mp4",
+  "w": 1920,
+  "h": 1080,
+  "audio": null,
+  "frames": [
+   {
+    "img": "b_yt2_f0.png",
+    "words": 27,
+    "audio": "b_yt2_s0.mp3"
+   },
+   {
+    "img": "b_yt2_f1.png",
+    "words": 44,
+    "audio": "b_yt2_s1.mp3"
+   },
+   {
+    "img": "b_yt2_f2.png",
+    "words": 31,
+    "audio": "b_yt2_s2.mp3"
+   },
+   {
+    "img": "b_yt2_f3.png",
+    "words": 35,
+    "audio": "b_yt2_s3.mp3"
+   },
+   {
+    "img": "b_yt2_f4.png",
+    "words": 39,
+    "audio": "b_yt2_s4.mp3"
+   },
+   {
+    "img": "b_yt2_f5.png",
+    "words": 37,
+    "audio": "b_yt2_s5.mp3"
+   },
+   {
+    "img": "b_yt2_f6.png",
+    "words": 30,
+    "audio": "b_yt2_s6.mp3"
+   }
+  ]
+ }
+}
