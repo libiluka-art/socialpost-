@@ -1,10 +1,10 @@
 // PipaPost — OAuth connect flow for Instagram/Facebook (Meta), YouTube (Google), TikTok, LinkedIn
-import { admin, credentials, cors, json, userFromReq, gfetch, GRAPH, FN_URL, log } from "./_shared.ts";
+import { admin, credentials, cors, json, userFromReq, gfetch, GRAPH, IG, FN_URL, log } from "./_shared.ts";
 
 const REDIRECT = `${FN_URL}/pp-oauth?action=callback`;
 
 const SCOPES: Record<string, string> = {
-  instagram: "instagram_basic,instagram_content_publish,instagram_manage_insights,pages_show_list,pages_read_engagement,business_management",
+  instagram: "instagram_business_basic,instagram_business_content_publish,instagram_business_manage_insights,instagram_business_manage_comments",
   facebook: "pages_show_list,pages_manage_posts,pages_read_engagement,read_insights,business_management",
   youtube: "https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/yt-analytics.readonly",
   tiktok: "user.info.basic,user.info.profile,user.info.stats,video.publish,video.upload,video.list",
@@ -14,6 +14,7 @@ const SCOPES: Record<string, string> = {
 function authUrl(network: string, c: Record<string, string>, state: string): string {
   switch (network) {
     case "instagram":
+      return `https://www.instagram.com/oauth/authorize?client_id=${c.ig_app_id}&redirect_uri=${encodeURIComponent(REDIRECT)}&state=${state}&scope=${SCOPES.instagram}&response_type=code&force_reauth=true`;
     case "facebook":
       return `https://www.facebook.com/v21.0/dialog/oauth?client_id=${c.meta_app_id}&redirect_uri=${encodeURIComponent(REDIRECT)}&state=${state}&scope=${SCOPES[network]}&response_type=code`;
     case "youtube":
@@ -45,6 +46,17 @@ async function connectMeta(owner: string, network: string, code: string, c: Reco
   }
   if (!n) throw new Error(network === "instagram" ? "No Instagram professional account found on your Facebook pages. Make sure your Instagram is a Business/Creator account linked to a Facebook Page." : "No Facebook pages found");
   return n;
+}
+
+async function connectInstagram(owner: string, code: string, c: Record<string, string>) {
+  const body = new URLSearchParams({ client_id: c.ig_app_id, client_secret: c.ig_app_secret, grant_type: "authorization_code", redirect_uri: REDIRECT, code });
+  const t = await gfetch("https://api.instagram.com/oauth/access_token", { method: "POST", body });
+  const short = t.access_token || t.data?.[0]?.access_token; if (!short) throw new Error("Instagram did not return a token");
+  const ll = await gfetch(`https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=${c.ig_app_secret}&access_token=${short}`);
+  const token = ll.access_token; const expires = new Date(Date.now() + (ll.expires_in || 5184000) * 1000).toISOString();
+  const me = await gfetch(`${IG}/me?fields=user_id,username,name,profile_picture_url,followers_count,media_count,account_type&access_token=${token}`);
+  if (me.account_type && me.account_type === "PERSONAL") throw new Error("This Instagram is a personal account. Switch it to Professional (Creator or Business) in Instagram settings and connect again.");
+  await admin().from("pp_accounts").upsert({ owner, network: "instagram", name: me.name || me.username, handle: me.username, avatar_url: me.profile_picture_url, external_id: String(me.user_id || me.id), page_id: null, access_token: token, token_expires_at: expires, scopes: SCOPES.instagram, status: "connected", last_error: null, meta: { login: "instagram", followers: me.followers_count, media_count: me.media_count, account_type: me.account_type } }, { onConflict: "owner,network,external_id" });
 }
 
 async function connectGoogle(owner: string, code: string, c: Record<string, string>) {
@@ -80,7 +92,7 @@ Deno.serve(async (req) => {
     const owner = await userFromReq(req); if (!owner) return json({ error: "unauthorized" }, 401);
     const { network, redirect_to } = await req.json();
     const c = await credentials(owner);
-    const need: Record<string, string[]> = { instagram: ["meta_app_id", "meta_app_secret"], facebook: ["meta_app_id", "meta_app_secret"], youtube: ["google_client_id", "google_client_secret"], tiktok: ["tiktok_client_key", "tiktok_client_secret"], linkedin: ["linkedin_client_id", "linkedin_client_secret"] };
+    const need: Record<string, string[]> = { instagram: ["ig_app_id", "ig_app_secret"], facebook: ["meta_app_id", "meta_app_secret"], youtube: ["google_client_id", "google_client_secret"], tiktok: ["tiktok_client_key", "tiktok_client_secret"], linkedin: ["linkedin_client_id", "linkedin_client_secret"] };
     const missing = (need[network] || []).filter((k) => !c[k]);
     if (missing.length) return json({ error: `Add ${missing.join(", ")} in Settings first` }, 400);
     const state = crypto.randomUUID().replace(/-/g, "");
@@ -98,7 +110,8 @@ Deno.serve(async (req) => {
     if (err || !code) return Response.redirect(`${back}#/accounts?error=${encodeURIComponent(err || "denied")}`, 302);
     try {
       const c = await credentials(st.owner);
-      if (st.network === "instagram" || st.network === "facebook") await connectMeta(st.owner, st.network, code, c);
+      if (st.network === "instagram") await connectInstagram(st.owner, code, c);
+      else if (st.network === "facebook") await connectMeta(st.owner, st.network, code, c);
       else if (st.network === "youtube") await connectGoogle(st.owner, code, c);
       else if (st.network === "tiktok") await connectTikTok(st.owner, code, c);
       else if (st.network === "linkedin") await connectLinkedIn(st.owner, code, c);

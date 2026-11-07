@@ -1,16 +1,16 @@
 // PipaPost — pulls account + post analytics (daily cron, or on demand from the app)
-import { admin, credentials, cors, json, userFromReq, cronOk, gfetch, GRAPH, log, freshGoogleToken, freshTikTokToken, freshMetaToken } from "./_shared.ts";
+import { admin, credentials, cors, json, userFromReq, cronOk, gfetch, GRAPH, log, freshGoogleToken, freshTikTokToken, freshMetaToken, freshIgToken, igBase } from "./_shared.ts";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
 async function accountStats(acc: any, creds: any): Promise<any> {
   const n = acc.network;
   if (n === "instagram") {
-    const tk = await freshMetaToken(acc, creds);
-    const u = await gfetch(`${GRAPH}/${acc.external_id}?fields=followers_count,follows_count,media_count&access_token=${tk}`);
+    const tk = await freshIgToken(acc, creds); const G = igBase(acc);
+    const u = await gfetch(`${G}/${acc.external_id}?fields=followers_count,follows_count,media_count&access_token=${tk}`);
     let ins: any = {};
     try {
-      const i = await gfetch(`${GRAPH}/${acc.external_id}/insights?metric=reach,profile_views,accounts_engaged&period=day&metric_type=total_value&access_token=${tk}`);
+      const i = await gfetch(`${G}/${acc.external_id}/insights?metric=reach,profile_views,accounts_engaged&period=day&metric_type=total_value&access_token=${tk}`);
       for (const m of i.data || []) ins[m.name] = m.total_value?.value ?? m.values?.[0]?.value;
     } catch (_) { /* insights need enough followers */ }
     return { followers: u.followers_count, following: u.follows_count, posts: u.media_count, reach: ins.reach, profile_views: ins.profile_views, engagement: ins.accounts_engaged, raw: { u, ins } };
@@ -40,15 +40,15 @@ async function accountStats(acc: any, creds: any): Promise<any> {
 async function postStats(acc: any, res: any, creds: any): Promise<any> {
   const n = acc.network; const id = res.external_id; if (!id) return null;
   if (n === "instagram") {
-    const tk = await freshMetaToken(acc, creds);
-    const m = await gfetch(`${GRAPH}/${id}?fields=like_count,comments_count,media_type,media_product_type&access_token=${tk}`);
+    const tk = await freshIgToken(acc, creds); const G = igBase(acc);
+    const m = await gfetch(`${G}/${id}?fields=like_count,comments_count,media_type,media_product_type&access_token=${tk}`);
     let ins: any = {};
     try {
-      const metric = m.media_product_type === "REELS" ? "plays,reach,saved,shares,total_interactions" : "impressions,reach,saved,shares";
-      const i = await gfetch(`${GRAPH}/${id}/insights?metric=${metric}&access_token=${tk}`);
+      const metric = m.media_product_type === "REELS" ? "views,reach,saved,shares,total_interactions" : "views,reach,saved,shares";
+      const i = await gfetch(`${G}/${id}/insights?metric=${metric}&access_token=${tk}`);
       for (const x of i.data || []) ins[x.name] = x.values?.[0]?.value;
     } catch (_) {}
-    return { likes: m.like_count, comments: m.comments_count, saves: ins.saved, shares: ins.shares, views: ins.plays, reach: ins.reach, impressions: ins.impressions, raw: { m, ins } };
+    return { likes: m.like_count, comments: m.comments_count, saves: ins.saved, shares: ins.shares, views: ins.views ?? ins.plays, reach: ins.reach, impressions: ins.impressions, raw: { m, ins } };
   }
   if (n === "facebook") {
     const tk = await freshMetaToken(acc, creds);

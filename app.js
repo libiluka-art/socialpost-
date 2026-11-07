@@ -265,7 +265,7 @@ async function renderAccounts(q) {
   if (q.get("connected")) toast(`${NET_NAME[q.get("connected")] || q.get("connected")} connected 🎉`); if (q.get("error")) toast(decodeURIComponent(q.get("error")), true);
   if (q.get("connected") || q.get("error")) { history.replaceState(null, "", "#/accounts"); await loadAll(); }
   const creds = S.settings.credentials || {};
-  const ready = { instagram: !!creds.meta_app_id, facebook: !!creds.meta_app_id, youtube: !!creds.google_client_id, tiktok: !!creds.tiktok_client_key, linkedin: !!creds.linkedin_client_id };
+  const ready = { instagram: !!creds.ig_app_id, facebook: !!creds.meta_app_id, youtube: !!creds.google_client_id, tiktok: !!creds.tiktok_client_key, linkedin: !!creds.linkedin_client_id };
   $("#main").innerHTML = `<div class="page-head"><div><h1>Accounts</h1><p class="muted">Connect the channels you publish to. Tokens are stored encrypted in your own database.</p></div></div>
     <div class="card"><h3>Connected</h3>${S.accounts.length ? S.accounts.map((a) => `<div class="acct">${a.avatar_url ? `<img class="avatar" src="${esc(a.avatar_url)}">` : `<span class="avatar"></span>`}<div class="grow"><div class="row gap">${netIcon(a.network)}<b>${esc(a.name || a.handle)}</b><span class="muted small">@${esc(a.handle)}</span></div><div class="small muted">${NET_NAME[a.network]} · connected ${fmtDay(a.connected_at)}${a.token_expires_at ? ` · token until ${fmtDay(a.token_expires_at)}` : ""}${a.last_error ? `<br><span class="down">⚠ ${esc(a.last_error)}</span>` : ""}</div></div><button class="btn sm" onclick="connect('${a.network}')">Reconnect</button><button class="btn sm danger-text" onclick="disconnect('${a.id}')">Remove</button></div>`).join("") : `<div class="empty">No channels connected yet.</div>`}</div>
     <div class="card" style="margin-top:16px"><h3>Add a channel</h3><div class="connect-grid">${Object.keys(NET_NAME).map((n) => `<div class="connect" onclick="connect('${n}')">${netIcon(n)}<span>${NET_NAME[n]}</span>${ready[n] ? "" : `<span class="muted tiny" style="margin-left:auto">needs keys</span>`}</div>`).join("")}</div><p class="muted small" style="margin-top:12px">Each platform needs a one-time developer app so Lukz Post can post on your behalf — the step-by-step is in <a class="link" href="#/settings">Settings</a>.</p></div>`;
@@ -292,20 +292,22 @@ async function renderSettings() {
     </div>
     <div class="card" style="margin-top:16px"><h3>API credentials</h3><p class="muted small">Saved to your private settings table (only your login can read them).</p>
       <div class="grid g2">
-        <div><h4>Meta (Instagram + Facebook)</h4>${field("meta_app_id", "App ID", "1234567890")}${field("meta_app_secret", "App secret")}</div>
+        <div><h4>Instagram (Instagram Login)</h4>${field("ig_app_id", "Instagram app ID", "1234567890")}${field("ig_app_secret", "Instagram app secret")}</div>
+        <div><h4>Facebook Page <span class="muted small">(optional)</span></h4>${field("meta_app_id", "Facebook App ID")}${field("meta_app_secret", "Facebook App secret")}</div>
         <div><h4>Google (YouTube)</h4>${field("google_client_id", "OAuth client ID", "xxxx.apps.googleusercontent.com")}${field("google_client_secret", "Client secret")}</div>
         <div><h4>TikTok</h4>${field("tiktok_client_key", "Client key")}${field("tiktok_client_secret", "Client secret")}</div>
         <div><h4>LinkedIn</h4>${field("linkedin_client_id", "Client ID")}${field("linkedin_client_secret", "Client secret")}</div>
       </div><button class="btn primary" id="saveCreds" style="margin-top:12px">Save credentials</button></div>
     <div class="card" style="margin-top:16px"><h3>Setup guides</h3>
-      <details><summary>Instagram &amp; Facebook (Meta app) — about 15 minutes</summary><ol>
-        <li>Your Instagram must be a <b>Professional</b> account (Business or Creator) linked to a <b>Facebook Page</b> (Instagram app → Settings → Business tools → Connect a Facebook Page).</li>
-        <li>Go to <a class="link" href="https://developers.facebook.com/apps" target="_blank">developers.facebook.com/apps</a> → <b>Create App</b> → use case <i>Other</i> → type <b>Business</b> → name it "Lukz Post".</li>
-        <li>In the app dashboard add the products <b>Facebook Login for Business</b> and <b>Instagram Graph API</b>.</li>
-        <li>Facebook Login → Settings → <b>Valid OAuth Redirect URIs</b>: paste the redirect URL above. Save.</li>
-        <li>App settings → Basic: copy <b>App ID</b> and <b>App Secret</b> into the fields here and save.</li>
-        <li>While the app is in <b>Development</b> mode only you (the app admin) can connect — which is all you need. Add your personal Facebook account under App roles → Administrators if it isn't already.</li>
-        <li>Back in Lukz Post → Accounts → <b>Instagram</b>. Approve all permissions, select your Page(s). Done.</li></ol></details>
+      <details open><summary>Instagram — no Facebook Page needed (about 10 minutes)</summary><ol>
+        <li>Your Instagram must be a <b>Professional</b> account: Instagram app → Settings → Account type and tools → <i>Switch to professional account</i> (Creator or Business). Free, instant, reversible.</li>
+        <li>Go to <a class="link" href="https://developers.facebook.com/apps/creation/" target="_blank">developers.facebook.com/apps/creation</a> (sign in with any Facebook login) → App name "Lukz Post" → <b>Next</b> → use case: <b>Manage everything on your Page</b>? No — pick <b>Other</b> → <b>Next</b> → app type <b>Business</b> → Create.</li>
+        <li>In the left menu click <b>Add product</b> → find <b>Instagram</b> → <i>Set up</i>. Then open <b>Instagram → API setup with Instagram login</b>.</li>
+        <li>Step 1 there ("Generate access tokens") → <b>Add account</b> → log in to <b>@lupapuz</b> and authorise (this registers it as a tester — required while the app is in development mode).</li>
+        <li>Step 3 ("Set up Instagram business login") → <b>Business login settings</b> → <i>OAuth redirect URIs</i>: paste the redirect URL above → Save.</li>
+        <li>On that same page copy <b>Instagram app ID</b> and <b>Instagram app secret</b> (not the Facebook App ID) into the fields here → Save credentials.</li>
+        <li>Back in Lukz Post → Accounts → <b>Instagram</b> → log in with @lupapuz → Allow. Done — development mode is enough for your own accounts; no app review needed.</li></ol></details>
+      <details><summary>Facebook Page (optional)</summary><ol><li>Only if you also want to post to a Facebook Page. In the same Meta app add <b>Facebook Login for Business</b>, set the redirect URL, and paste the Facebook <b>App ID</b>/<b>App secret</b> above.</li></ol></details>
       <details><summary>YouTube (Google Cloud OAuth) — about 10 minutes</summary><ol>
         <li>Open <a class="link" href="https://console.cloud.google.com/" target="_blank">console.cloud.google.com</a> → New project "Lukz Post".</li>
         <li>APIs &amp; Services → Library → enable <b>YouTube Data API v3</b> and <b>YouTube Analytics API</b>.</li>
@@ -327,7 +329,7 @@ async function renderSettings() {
     <div class="card" style="margin-top:16px"><h3>Activity log</h3>${(logs || []).length ? logs.map((l) => `<div class="log ${l.level}">${fmtDT(l.created_at)} · ${esc(l.message)}${l.detail?.error ? ` — ${esc(l.detail.error)}` : ""}</div>`).join("") : `<div class="empty">Nothing yet.</div>`}</div>`;
   $("#savePrefs").onclick = async () => { const value = { timezone: $("#p_tz").value, default_time: $("#p_time").value }; const { error } = await sb.from("pp_settings").upsert({ key: "prefs", value, owner: S.user.id }); if (error) return toast(error.message, true); S.settings.prefs = value; S.tz = value.timezone; toast("Preferences saved"); };
   $("#savePw").onclick = async () => { const a = $("#pw1").value, b = $("#pw2").value; if (a.length < 8) return toast("Use at least 8 characters", true); if (a !== b) return toast("Passwords don't match", true); const { error } = await sb.auth.updateUser({ password: a }); if (error) return toast(error.message, true); $("#pw1").value = $("#pw2").value = ""; toast("Password updated"); };
-  $("#saveCreds").onclick = async () => { const value = {}; ["meta_app_id", "meta_app_secret", "google_client_id", "google_client_secret", "tiktok_client_key", "tiktok_client_secret", "linkedin_client_id", "linkedin_client_secret"].forEach((k) => (value[k] = $(`#c_${k}`).value.trim())); const { error } = await sb.from("pp_settings").upsert({ key: "credentials", value, owner: S.user.id }); if (error) return toast(error.message, true); S.settings.credentials = value; toast("Credentials saved"); };
+  $("#saveCreds").onclick = async () => { const value = {}; ["ig_app_id", "ig_app_secret", "meta_app_id", "meta_app_secret", "google_client_id", "google_client_secret", "tiktok_client_key", "tiktok_client_secret", "linkedin_client_id", "linkedin_client_secret"].forEach((k) => (value[k] = $(`#c_${k}`).value.trim())); const { error } = await sb.from("pp_settings").upsert({ key: "credentials", value, owner: S.user.id }); if (error) return toast(error.message, true); S.settings.credentials = value; toast("Credentials saved"); };
 }
 
 // ---------------------------------------------------------------- composer

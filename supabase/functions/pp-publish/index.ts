@@ -1,6 +1,6 @@
 // PipaPost — publishes due posts to Instagram, Facebook, YouTube, TikTok and LinkedIn.
 // Runs every minute from pg_cron (x-cron-secret) and on demand from the app ("Publish now", user JWT).
-import { admin, credentials, cors, json, userFromReq, cronOk, gfetch, GRAPH, log, sleep, freshGoogleToken, freshTikTokToken, freshMetaToken, headSize } from "./_shared.ts";
+import { admin, credentials, cors, json, userFromReq, cronOk, gfetch, GRAPH, log, sleep, freshGoogleToken, freshTikTokToken, freshMetaToken, freshIgToken, igBase, headSize } from "./_shared.ts";
 
 type Media = { url: string; type: string; path?: string; name?: string };
 type Target = { account_id: string; type: string }; // type: post | reel | story | short | video
@@ -11,7 +11,7 @@ const hashtags = (s: string) => (s.match(/#[\p{L}\p{N}_]+/gu) || []).map((h) => 
 
 // ---------------------------------------------------------------- Instagram
 async function publishInstagram(acc: any, post: any, t: Target, prev: Result, creds: any): Promise<Result> {
-  const token = await freshMetaToken(acc, creds);
+  const token = await freshIgToken(acc, creds); const G = igBase(acc);
   const ig = acc.external_id; const media: Media[] = post.media || [];
   const caption = post.text || "";
   let container = prev.container_id;
@@ -28,30 +28,30 @@ async function publishInstagram(acc: any, post: any, t: Target, prev: Result, cr
       for (const m of media.slice(0, 10)) {
         const cp: Record<string, string> = { access_token: token, is_carousel_item: "true" };
         if (m.type === "video") { cp.media_type = "VIDEO"; cp.video_url = m.url; } else cp.image_url = m.url;
-        const c = await gfetch(`${GRAPH}/${ig}/media`, { method: "POST", body: new URLSearchParams(cp) });
+        const c = await gfetch(`${G}/${ig}/media`, { method: "POST", body: new URLSearchParams(cp) });
         children.push(c.id);
       }
-      for (const id of children) await waitContainer(id, token, 60);
+      for (const id of children) await waitContainer(id, token, 60, G);
       p.media_type = "CAROUSEL"; p.children = children.join(","); p.caption = caption;
     } else { p.image_url = media[0].url; p.caption = caption; }
-    const c = await gfetch(`${GRAPH}/${ig}/media`, { method: "POST", body: new URLSearchParams(p) });
+    const c = await gfetch(`${G}/${ig}/media`, { method: "POST", body: new URLSearchParams(p) });
     container = c.id;
   }
-  const ready = await waitContainer(container!, token, 100);
+  const ready = await waitContainer(container!, token, 100, G);
   if (!ready) return { status: "processing", container_id: container, attempts: (prev.attempts || 0) + 1 };
-  const pub = await gfetch(`${GRAPH}/${ig}/media_publish`, { method: "POST", body: new URLSearchParams({ creation_id: container!, access_token: token }) });
+  const pub = await gfetch(`${G}/${ig}/media_publish`, { method: "POST", body: new URLSearchParams({ creation_id: container!, access_token: token }) });
   let permalink = "";
-  try { const info = await gfetch(`${GRAPH}/${pub.id}?fields=permalink&access_token=${token}`); permalink = info.permalink; } catch { /* stories have no permalink */ }
+  try { const info = await gfetch(`${G}/${pub.id}?fields=permalink&access_token=${token}`); permalink = info.permalink; } catch { /* stories have no permalink */ }
   if (post.first_comment && t.type !== "story") {
-    try { await gfetch(`${GRAPH}/${pub.id}/comments`, { method: "POST", body: new URLSearchParams({ message: post.first_comment, access_token: token }) }); } catch (e) { await log(post.owner, "First comment failed", { e: String(e) }, "warn", post.id, acc.id); }
+    try { await gfetch(`${G}/${pub.id}/comments`, { method: "POST", body: new URLSearchParams({ message: post.first_comment, access_token: token }) }); } catch (e) { await log(post.owner, "First comment failed", { e: String(e) }, "warn", post.id, acc.id); }
   }
   return { status: "published", external_id: pub.id, url: permalink || `https://www.instagram.com/${acc.handle}/` };
 }
 
-async function waitContainer(id: string, token: string, maxSeconds: number): Promise<boolean> {
+async function waitContainer(id: string, token: string, maxSeconds: number, G = GRAPH): Promise<boolean> {
   const until = Date.now() + maxSeconds * 1000;
   while (Date.now() < until) {
-    const s = await gfetch(`${GRAPH}/${id}?fields=status_code,status&access_token=${token}`);
+    const s = await gfetch(`${G}/${id}?fields=status_code,status&access_token=${token}`);
     if (s.status_code === "FINISHED") return true;
     if (s.status_code === "ERROR" || s.status_code === "EXPIRED") throw new Error(`Instagram could not process the media: ${s.status || s.status_code}`);
     await sleep(5000);

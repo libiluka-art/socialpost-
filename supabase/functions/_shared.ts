@@ -6,6 +6,9 @@ export const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 export const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 export const FN_URL = `${SUPABASE_URL}/functions/v1`;
 export const GRAPH = "https://graph.facebook.com/v21.0";
+export const IG = "https://graph.instagram.com/v21.0";
+/** Graph base for an Instagram account: Instagram-Login accounts use graph.instagram.com, page-linked ones graph.facebook.com */
+export const igBase = (acc: any) => (acc.meta?.login === "instagram" ? IG : GRAPH);
 
 export const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -78,6 +81,18 @@ export async function freshMetaToken(acc: any, creds: Record<string, string>): P
   if (!exp || exp - Date.now() > 10 * 86400_000) return acc.access_token;
   try {
     const t = await gfetch(`${GRAPH}/oauth/access_token?grant_type=fb_exchange_token&client_id=${creds.meta_app_id}&client_secret=${creds.meta_app_secret}&fb_exchange_token=${acc.access_token}`);
+    await admin().from("pp_accounts").update({ access_token: t.access_token, token_expires_at: new Date(Date.now() + (t.expires_in || 5184000) * 1000).toISOString() }).eq("id", acc.id);
+    return t.access_token;
+  } catch { return acc.access_token; }
+}
+
+/** Instagram-Login long-lived tokens last 60 days; refresh when within 10 days of expiry. */
+export async function freshIgToken(acc: any, creds: Record<string, string>): Promise<string> {
+  if (acc.meta?.login !== "instagram") return freshMetaToken(acc, creds);
+  const exp = acc.token_expires_at ? new Date(acc.token_expires_at).getTime() : 0;
+  if (!exp || exp - Date.now() > 10 * 86400_000) return acc.access_token;
+  try {
+    const t = await gfetch(`https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=${acc.access_token}`);
     await admin().from("pp_accounts").update({ access_token: t.access_token, token_expires_at: new Date(Date.now() + (t.expires_in || 5184000) * 1000).toISOString() }).eq("id", acc.id);
     return t.access_token;
   } catch { return acc.access_token; }
