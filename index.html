@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PipaPost</title>
+<meta name="theme-color" content="#EC4096">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23EC4096'/%3E%3Cpath d='M20 46V18h13a10 10 0 010 20h-7v8z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="config.js"></script>
+</head>
+<body>
+<div id="app">
+  <!-- Login -->
+  <section id="login" class="login hidden">
+    <div class="login-card">
+      <div class="logo"><span class="logo-mark">P</span><span>PipaPost</span></div>
+      <p class="muted">Schedule, publish and measure — all your channels in one place.</p>
+      <form id="loginForm">
+        <label>Email<input type="email" id="loginEmail" required autocomplete="username"></label>
+        <label>Password<input type="password" id="loginPass" required autocomplete="current-password"></label>
+        <button class="btn primary wide" type="submit">Sign in</button>
+        <p class="error" id="loginError"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- Shell -->
+  <div id="shell" class="shell hidden">
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-mark">P</span><span>PipaPost</span></div>
+      <nav>
+        <a href="#/dashboard" data-nav="dashboard">▦ Dashboard</a>
+        <a href="#/calendar" data-nav="calendar">▤ Calendar</a>
+        <a href="#/posts" data-nav="posts">≡ Posts</a>
+        <a href="#/media" data-nav="media">▣ Media</a>
+        <a href="#/analytics" data-nav="analytics">◔ Analytics</a>
+        <a href="#/accounts" data-nav="accounts">◉ Accounts</a>
+        <a href="#/settings" data-nav="settings">⚙ Settings</a>
+      </nav>
+      <button class="btn primary wide" id="newPostBtn">+ New post</button>
+      <div class="sidebar-foot"><span id="userEmail" class="muted small"></span><button class="link" id="logoutBtn">Sign out</button></div>
+    </aside>
+    <main id="main"></main>
+  </div>
+
+  <!-- Composer -->
+  <div id="composer" class="modal hidden">
+    <div class="modal-card composer">
+      <header><h2 id="composerTitle">New post</h2><button class="icon-btn" data-close>✕</button></header>
+      <div class="composer-body">
+        <div class="composer-left">
+          <label>Channels</label>
+          <div id="targetList" class="targets"></div>
+          <label>Caption <span class="muted small" id="charCount">0</span></label>
+          <textarea id="postText" rows="7" placeholder="Write your caption… #hashtags are picked up as YouTube tags"></textarea>
+          <div class="row">
+            <label class="grow">Title <span class="muted small">(YouTube / Facebook video)</span><input id="postTitle" placeholder="Optional"></label>
+          </div>
+          <label>First comment <span class="muted small">(Instagram)</span><input id="firstComment" placeholder="Optional — great for hashtags"></label>
+          <label>Media</label>
+          <div id="postMedia" class="media-strip"></div>
+          <div class="row gap">
+            <button class="btn" id="pickMediaBtn">Choose from library</button>
+            <label class="btn file-btn">Upload<input type="file" id="composerUpload" multiple accept="image/*,video/*" hidden></label>
+          </div>
+          <label>Schedule</label>
+          <div class="row gap">
+            <input type="datetime-local" id="postWhen">
+            <span class="muted small" id="tzLabel"></span>
+          </div>
+          <div id="bestTimes" class="chips"></div>
+        </div>
+        <div class="composer-right">
+          <div class="phone">
+            <div class="phone-top"><span class="avatar-sm" id="pvAvatar"></span><strong id="pvHandle">your_handle</strong></div>
+            <div class="phone-media" id="pvMedia"><span class="muted">Media preview</span></div>
+            <div class="phone-caption" id="pvCaption"></div>
+          </div>
+        </div>
+      </div>
+      <footer>
+        <span id="composerStatus" class="muted small"></span>
+        <div class="row gap">
+          <button class="btn danger-text hidden" id="deletePostBtn">Delete</button>
+          <button class="btn" id="saveDraftBtn">Save draft</button>
+          <button class="btn" id="publishNowBtn">Publish now</button>
+          <button class="btn primary" id="scheduleBtn">Schedule</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Media picker -->
+  <div id="picker" class="modal hidden">
+    <div class="modal-card">
+      <header><h2>Media library</h2><button class="icon-btn" data-close>✕</button></header>
+      <div id="pickerGrid" class="media-grid"></div>
+      <footer><span class="muted small">Click items to select</span><button class="btn primary" id="pickerDone">Add selected</button></footer>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
