@@ -285,7 +285,8 @@ async function renderSettings() {
   $("#main").innerHTML = `<div class="page-head"><div><h1>Settings</h1></div></div>
     <div class="grid g2">
       <div class="card"><h3>Preferences</h3><label>Timezone<select id="p_tz">${["Asia/Dubai", "Asia/Kolkata", "Asia/Riyadh", "Europe/London", "Europe/Madrid", "America/New_York", "UTC"].map((z) => `<option ${(prefs.timezone || C.DEFAULT_TZ) === z ? "selected" : ""}>${z}</option>`).join("")}</select></label>
-        <label>Default post time<input id="p_time" type="time" value="${esc(prefs.default_time || "18:00")}"></label><button class="btn primary" id="savePrefs" style="margin-top:12px">Save preferences</button></div>
+        <label>Default post time<input id="p_time" type="time" value="${esc(prefs.default_time || "18:00")}"></label><button class="btn primary" id="savePrefs" style="margin-top:12px">Save preferences</button>
+        <h3 style="margin-top:22px">Change password</h3><label>New password<input id="pw1" type="password" autocomplete="new-password" minlength="8"></label><label>Repeat new password<input id="pw2" type="password" autocomplete="new-password"></label><button class="btn" id="savePw" style="margin-top:12px">Update password</button></div>
       <div class="card"><h3>OAuth redirect URL</h3><p class="muted small">Paste this as the redirect / callback URL in every developer app below.</p><div class="copy"><span>${redirect}</span><button class="btn sm" onclick="navigator.clipboard.writeText('${redirect}');toast('Copied')">Copy</button></div>
         <p class="muted small" style="margin-top:10px">Scheduler runs every minute · Analytics sync daily 06:15 ${esc(prefs.timezone || C.DEFAULT_TZ)}</p></div>
     </div>
@@ -325,6 +326,7 @@ async function renderSettings() {
     </div>
     <div class="card" style="margin-top:16px"><h3>Activity log</h3>${(logs || []).length ? logs.map((l) => `<div class="log ${l.level}">${fmtDT(l.created_at)} · ${esc(l.message)}${l.detail?.error ? ` — ${esc(l.detail.error)}` : ""}</div>`).join("") : `<div class="empty">Nothing yet.</div>`}</div>`;
   $("#savePrefs").onclick = async () => { const value = { timezone: $("#p_tz").value, default_time: $("#p_time").value }; const { error } = await sb.from("pp_settings").upsert({ key: "prefs", value, owner: S.user.id }); if (error) return toast(error.message, true); S.settings.prefs = value; S.tz = value.timezone; toast("Preferences saved"); };
+  $("#savePw").onclick = async () => { const a = $("#pw1").value, b = $("#pw2").value; if (a.length < 8) return toast("Use at least 8 characters", true); if (a !== b) return toast("Passwords don't match", true); const { error } = await sb.auth.updateUser({ password: a }); if (error) return toast(error.message, true); $("#pw1").value = $("#pw2").value = ""; toast("Password updated"); };
   $("#saveCreds").onclick = async () => { const value = {}; ["meta_app_id", "meta_app_secret", "google_client_id", "google_client_secret", "tiktok_client_key", "tiktok_client_secret", "linkedin_client_id", "linkedin_client_secret"].forEach((k) => (value[k] = $(`#c_${k}`).value.trim())); const { error } = await sb.from("pp_settings").upsert({ key: "credentials", value, owner: S.user.id }); if (error) return toast(error.message, true); S.settings.credentials = value; toast("Credentials saved"); };
 }
 
