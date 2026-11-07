@@ -19,19 +19,26 @@ video{width:100%;height:100%;object-fit:cover}
 <div class="top">Lukzy</div><div id="feed"></div>
 <script>
 const B="https://raw.githubusercontent.com/libiluka-art/socialpost-/main/media/";
-const V=[["just-5-more-minutes","Just 5 More Minutes!","We have all been there. #relatable"],["the-diet","The Diet","Starts Monday. Always Monday."],["the-gym","The Gym","Membership paid, motivation pending."],["the-side-hustle","The Side Hustle","Lazy hustler energy."],["the-budget","The Budget","Spreadsheet says no."],["exam-season","Exam Season","Study plan: panic."]];
+const H="https://d2ol7oe51mr4n9.cloudfront.net/user_3K5S3vRd1g9An77KyEDNhqurdsi/";
+const V=[["the-interview","The Interview","\"I'm a hard worker!\" Under review forever.",H+"b16b9181-c577-4928-8ac5-0c81f2552baf.mp4"],
+["the-boss","The Boss","We're a family here! A raise? HAHAHA.",H+"d86a78dd-6185-4211-a5cb-a24e4d1c94bb.mp4"],
+["the-offer","The Offer","Five hundred. Plus exposure.",H+"eac6c69d-3a41-4743-bcf4-b5295d26f2ba.mp4"],
+["the-water","The Water Challenge","Coffee is 98% water, right?"],["the-meeting","The Monday Meeting","It could've been an email."],
+["work-from-home","Work From Home","You're on mute. Every. Day."],["ten-k-steps","10,000 Steps","Step 23: the fridge."],
+["bed-by-ten","Bed By 10 PM","One reel = four hours."],
+["just-5-more-minutes","Just 5 More Minutes!","We have all been there. #relatable"],["the-diet","The Diet","Starts Monday. Always Monday."],["the-gym","The Gym","Membership paid, motivation pending."],["the-side-hustle","The Side Hustle","Lazy hustler energy."],["the-budget","The Budget","Spreadsheet says no."],["exam-season","Exam Season","Study plan: panic."]];
 let L={};try{L=JSON.parse(localStorage.lz||"{}")}catch(e){}
 let muted=true;const feed=document.getElementById("feed");
 const heart='<svg viewBox="0 0 24 24"><path d="M12 21s-8-5.3-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.7-8 11-8 11z"/></svg>';
 const share='<svg viewBox="0 0 24 24"><path d="M18 16a3 3 0 0 0-2.4 1.2l-6.3-3.2a3 3 0 0 0 0-2l6.3-3.2A3 3 0 1 0 15 7l-6.3 3.2a3 3 0 1 0 0 3.6L15 17a3 3 0 1 0 3-1z"/></svg>';
-V.forEach(([id,t,c],i)=>{const d=document.createElement("div");d.className="v";
-d.innerHTML='<video src="'+B+id+'.mp4" loop playsinline muted preload="'+(i<2?"auto":"none")+'"></video><div class="mute">Tap for sound</div><div class="cap"><b>@lukz · '+t+'</b><span>'+c+'</span></div><div class="side"><button class="lk'+(L[id]?" liked":"")+'">'+heart+'<i>'+(L[id]?1:0)+'</i></button><button class="sh">'+share+'Share</button></div><div class="bar"></div>';
+V.forEach(([id,t,c,u],i)=>{const src=u||(B+id+".mp4");const d=document.createElement("div");d.className="v";
+d.innerHTML='<video src="'+src+'" loop playsinline muted preload="'+(i<2?"auto":"none")+'"></video><div class="mute">Tap for sound</div><div class="cap"><b>@lukz · '+t+'</b><span>'+c+'</span></div><div class="side"><button class="lk'+(L[id]?" liked":"")+'">'+heart+'<i>'+(L[id]?1:0)+'</i></button><button class="sh">'+share+'Share</button></div><div class="bar"></div>';
 const v=d.querySelector("video"),bar=d.querySelector(".bar");
 v.ontimeupdate=()=>bar.style.width=(v.currentTime/v.duration*100||0)+"%";
 v.onclick=()=>{if(muted){muted=false;document.querySelectorAll("video").forEach(x=>x.muted=false);document.querySelectorAll(".mute").forEach(x=>x.style.display="none")}else v.paused?v.play():v.pause()};
 v.ondblclick=()=>{L[id]=1;d.querySelector(".lk").classList.add("liked");d.querySelector(".lk i").textContent=1;try{localStorage.lz=JSON.stringify(L)}catch(e){}};
 d.querySelector(".lk").onclick=e=>{const on=!L[id];L[id]=on?1:0;e.currentTarget.classList.toggle("liked",on);e.currentTarget.querySelector("i").textContent=on?1:0;try{localStorage.lz=JSON.stringify(L)}catch(e){}};
-d.querySelector(".sh").onclick=()=>{const u=B+id+".mp4";navigator.share?navigator.share({title:t,url:u}).catch(()=>{}):navigator.clipboard&&navigator.clipboard.writeText(u)};
+d.querySelector(".sh").onclick=()=>{const u=src;navigator.share?navigator.share({title:t,url:u}).catch(()=>{}):navigator.clipboard&&navigator.clipboard.writeText(u)};
 feed.appendChild(d)});
 const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector("video"),m=e.target.querySelector(".mute");
 if(e.isIntersecting){v.muted=muted;v.play().catch(()=>{});if(muted)m.style.display="block";const n=e.target.nextElementSibling;if(n)n.querySelector("video").preload="auto"}else{v.pause();v.currentTime=0}}),{threshold:.7});
