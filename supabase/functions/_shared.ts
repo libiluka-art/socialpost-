@@ -51,7 +51,7 @@ export async function gfetch(url: string, init: RequestInit = {}): Promise<any> 
   const r = await fetch(url, init);
   const txt = await r.text();
   let body: any; try { body = JSON.parse(txt); } catch { body = { raw: txt }; }
-  if (!r.ok) throw new Error(body?.error?.message || body?.error_description || body?.error?.error_user_msg || body?.message || `${r.status} ${txt.slice(0, 300)}`);
+  if (!r.ok) throw new Error(body?.error?.message || body?.error_description || body?.error?.error_user_msg || body?.error_message || body?.message || `${r.status} ${txt.slice(0, 300)}`);
   return body;
 }
 
