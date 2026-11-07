@@ -1,4 +1,4 @@
-/* PipaPost — app.js */
+/* Lukz Post — app.js */
 const C = window.PP_CONFIG;
 const sb = supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANON_KEY);
 const FN = `${C.SUPABASE_URL}/functions/v1`;
@@ -268,7 +268,7 @@ async function renderAccounts(q) {
   const ready = { instagram: !!creds.meta_app_id, facebook: !!creds.meta_app_id, youtube: !!creds.google_client_id, tiktok: !!creds.tiktok_client_key, linkedin: !!creds.linkedin_client_id };
   $("#main").innerHTML = `<div class="page-head"><div><h1>Accounts</h1><p class="muted">Connect the channels you publish to. Tokens are stored encrypted in your own database.</p></div></div>
     <div class="card"><h3>Connected</h3>${S.accounts.length ? S.accounts.map((a) => `<div class="acct">${a.avatar_url ? `<img class="avatar" src="${esc(a.avatar_url)}">` : `<span class="avatar"></span>`}<div class="grow"><div class="row gap">${netIcon(a.network)}<b>${esc(a.name || a.handle)}</b><span class="muted small">@${esc(a.handle)}</span></div><div class="small muted">${NET_NAME[a.network]} · connected ${fmtDay(a.connected_at)}${a.token_expires_at ? ` · token until ${fmtDay(a.token_expires_at)}` : ""}${a.last_error ? `<br><span class="down">⚠ ${esc(a.last_error)}</span>` : ""}</div></div><button class="btn sm" onclick="connect('${a.network}')">Reconnect</button><button class="btn sm danger-text" onclick="disconnect('${a.id}')">Remove</button></div>`).join("") : `<div class="empty">No channels connected yet.</div>`}</div>
-    <div class="card" style="margin-top:16px"><h3>Add a channel</h3><div class="connect-grid">${Object.keys(NET_NAME).map((n) => `<div class="connect" onclick="connect('${n}')">${netIcon(n)}<span>${NET_NAME[n]}</span>${ready[n] ? "" : `<span class="muted tiny" style="margin-left:auto">needs keys</span>`}</div>`).join("")}</div><p class="muted small" style="margin-top:12px">Each platform needs a one-time developer app so PipaPost can post on your behalf — the step-by-step is in <a class="link" href="#/settings">Settings</a>.</p></div>`;
+    <div class="card" style="margin-top:16px"><h3>Add a channel</h3><div class="connect-grid">${Object.keys(NET_NAME).map((n) => `<div class="connect" onclick="connect('${n}')">${netIcon(n)}<span>${NET_NAME[n]}</span>${ready[n] ? "" : `<span class="muted tiny" style="margin-left:auto">needs keys</span>`}</div>`).join("")}</div><p class="muted small" style="margin-top:12px">Each platform needs a one-time developer app so Lukz Post can post on your behalf — the step-by-step is in <a class="link" href="#/settings">Settings</a>.</p></div>`;
 }
 async function connect(network) {
   try { const r = await fn("pp-oauth", { network, redirect_to: location.origin + location.pathname }, "?action=start"); location.href = r.url; }
@@ -299,14 +299,14 @@ async function renderSettings() {
     <div class="card" style="margin-top:16px"><h3>Setup guides</h3>
       <details><summary>Instagram &amp; Facebook (Meta app) — about 15 minutes</summary><ol>
         <li>Your Instagram must be a <b>Professional</b> account (Business or Creator) linked to a <b>Facebook Page</b> (Instagram app → Settings → Business tools → Connect a Facebook Page).</li>
-        <li>Go to <a class="link" href="https://developers.facebook.com/apps" target="_blank">developers.facebook.com/apps</a> → <b>Create App</b> → use case <i>Other</i> → type <b>Business</b> → name it "PipaPost".</li>
+        <li>Go to <a class="link" href="https://developers.facebook.com/apps" target="_blank">developers.facebook.com/apps</a> → <b>Create App</b> → use case <i>Other</i> → type <b>Business</b> → name it "Lukz Post".</li>
         <li>In the app dashboard add the products <b>Facebook Login for Business</b> and <b>Instagram Graph API</b>.</li>
         <li>Facebook Login → Settings → <b>Valid OAuth Redirect URIs</b>: paste the redirect URL above. Save.</li>
         <li>App settings → Basic: copy <b>App ID</b> and <b>App Secret</b> into the fields here and save.</li>
         <li>While the app is in <b>Development</b> mode only you (the app admin) can connect — which is all you need. Add your personal Facebook account under App roles → Administrators if it isn't already.</li>
-        <li>Back in PipaPost → Accounts → <b>Instagram</b>. Approve all permissions, select your Page(s). Done.</li></ol></details>
+        <li>Back in Lukz Post → Accounts → <b>Instagram</b>. Approve all permissions, select your Page(s). Done.</li></ol></details>
       <details><summary>YouTube (Google Cloud OAuth) — about 10 minutes</summary><ol>
-        <li>Open <a class="link" href="https://console.cloud.google.com/" target="_blank">console.cloud.google.com</a> → New project "PipaPost".</li>
+        <li>Open <a class="link" href="https://console.cloud.google.com/" target="_blank">console.cloud.google.com</a> → New project "Lukz Post".</li>
         <li>APIs &amp; Services → Library → enable <b>YouTube Data API v3</b> and <b>YouTube Analytics API</b>.</li>
         <li>APIs &amp; Services → OAuth consent screen → External → fill name/email → add scopes <code>youtube.upload</code>, <code>youtube.readonly</code>, <code>yt-analytics.readonly</code> → add your Google account as a <b>Test user</b>.</li>
         <li>Credentials → Create credentials → <b>OAuth client ID</b> → Web application → Authorized redirect URI: paste the redirect URL above.</li>

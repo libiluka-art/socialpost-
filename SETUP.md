@@ -1,13 +1,13 @@
-# PipaPost — setup
+# Lukz Post — setup
 
-PipaPost is your own social-media scheduler (Instagram, Facebook Pages, YouTube, TikTok, LinkedIn).
+Lukz Post is your own social-media scheduler (Instagram, Facebook Pages, YouTube, TikTok, LinkedIn).
 
 **Web app:** this folder (static site on Netlify).
 **Backend:** Supabase project `hyuqwbzdjgmsqcjrkgkk` — tables `pp_*`, storage bucket `pp-media`,
 edge functions `pp-oauth` (connect accounts), `pp-publish` (runs every minute), `pp-analytics` (daily 06:15 Dubai + "Sync now").
 
 ## Sign in
-Use your PIPA ONE login (libin@pipame.com + same password). Only that account can see PipaPost data.
+Use your PIPA ONE login (libin@pipame.com + same password). Only that account can see Lukz Post data.
 
 ## Connect your channels (one-time, per platform)
 Open the app → **Settings** → follow the setup guide for each platform (Meta ≈ 15 min, Google ≈ 10 min,
