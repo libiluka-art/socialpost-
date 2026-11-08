@@ -13,10 +13,16 @@ video{width:100%;height:100%;object-fit:cover}
 .side svg{width:36px;height:36px;display:block;margin:0 auto 2px;fill:#fff;filter:drop-shadow(0 1px 3px #000)}
 .liked svg{fill:#ff3d71}
 .bar{position:absolute;left:0;bottom:0;height:3px;width:0;background:#fff}
-.top{position:fixed;top:0;left:0;right:0;text-align:center;padding:12px;font-weight:700;letter-spacing:.5px;z-index:2;text-shadow:0 1px 4px #000;pointer-events:none}
+.top{position:fixed;top:0;left:0;right:0;text-align:center;padding:12px;font-weight:700;letter-spacing:.5px;z-index:2;text-shadow:0 1px 4px #000}
+.top span{margin:0 12px;opacity:.5;cursor:pointer}.top span.on{opacity:1;border-bottom:2px solid #ff3d71;padding-bottom:3px}
+#posts{display:none;height:100dvh;overflow-y:auto;padding:60px 12px 90px;box-sizing:border-box}
+.post{margin:0 auto 28px;max-width:480px}.post h3{font-size:15px;margin:0 0 8px;color:#ddd}.post h3 small{color:#888;font-weight:400;margin-left:8px}
+.strip{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;scrollbar-width:none;border-radius:14px}.strip::-webkit-scrollbar{display:none}
+.strip img{width:100%;flex:0 0 100%;scroll-snap-align:start;border-radius:14px;background:#111}
+.dots{text-align:center;margin-top:8px;font-size:11px;color:#777}
 .mute{position:absolute;top:48px;right:12px;font-size:13px;background:#0008;padding:4px 10px;border-radius:12px;display:none}
 </style></head><body>
-<div class="top">Lukzy</div><div id="feed"></div>
+<div class="top"><span id="tv" class="on">Reels</span><span id="tp">Posts</span></div><div id="feed"></div><div id="posts"></div>
 <script>
 const B="https://raw.githubusercontent.com/libiluka-art/socialpost-/main/media/";
 const H="https://d2ol7oe51mr4n9.cloudfront.net/user_3K5S3vRd1g9An77KyEDNhqurdsi/";
@@ -46,4 +52,15 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelec
 if(e.isIntersecting){v.muted=muted;v.play().catch(()=>{});if(muted)m.style.display="block";const n=e.target.nextElementSibling;if(n)n.querySelector("video").preload="auto"}else{v.pause();v.currentTime=0}}),{threshold:.7});
 document.querySelectorAll(".v").forEach(x=>io.observe(x));
 if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+
+const C="https://raw.githubusercontent.com/libiluka-art/socialpost-/main/media/car/";
+const P=[["meeting-types",7,"5 Types of People in Every Meeting","@lupapuz"],["malayali-sunday",7,"ഒരു മലയാളിയുടെ ഞായറാഴ്ച","@hotstarlives"]];
+const posts=document.getElementById("posts");
+P.forEach(([id,n,t,h])=>{const d=document.createElement("div");d.className="post";
+let im="";for(let i=1;i<=n;i++)im+='<img loading="lazy" src="'+C+id+'-'+String(i).padStart(2,"0")+'.jpg">';
+d.innerHTML='<h3>'+t+'<small>'+h+'</small></h3><div class="strip">'+im+'</div><div class="dots">swipe → '+n+' slides</div>';posts.appendChild(d)});
+const tv=document.getElementById("tv"),tp=document.getElementById("tp");
+function show(p){posts.style.display=p?"block":"none";feed.style.display=p?"none":"block";tv.classList.toggle("on",!p);tp.classList.toggle("on",p);
+document.querySelectorAll("video").forEach(v=>{if(p)v.pause()});}
+tv.onclick=()=>show(false);tp.onclick=()=>show(true);
 </script></body></html>
